@@ -79,12 +79,6 @@ def generate_travel_pdf(
 
         story.append(Spacer(1, 15))
 
-    story.append(
-        Paragraph(
-            f"<b>Total LLM Calls:</b> {collected['llm_calls']}",
-            styles["BodyText"]
-        )
-    )
 
     doc.build(story)
 

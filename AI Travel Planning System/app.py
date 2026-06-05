@@ -4,6 +4,9 @@ from datetime import datetime
 from langchain_core.messages import HumanMessage
 from main import app
 from tools.pdf_generator_tool import generate_travel_pdf
+import warnings
+warnings.filterwarnings("ignore")
+
 st.set_page_config(
     page_title="AI Travel Planning System",
     page_icon="✈️",
@@ -364,7 +367,7 @@ for qc, label in zip(qcols, QUICK):
             quick_fill = label
 
 user_query = st.text_area(
-    "",
+    "Travel Request",
     value=quick_fill,
     placeholder="e.g. Plan a complete 7-day Japan trip including flights, hotels and sightseeing under ₹2 lakhs",
     height=100,
