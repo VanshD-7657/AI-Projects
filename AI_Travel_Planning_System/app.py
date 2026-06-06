@@ -477,9 +477,9 @@ if generate:
                             final_response=text
                             )
 
-                    collected["llm_calls"] = state_update.get("llm_calls", collected["llm_calls"])
-                    st.session_state.collected = collected
-                    st.session_state.last_query = user_query
+        collected["llm_calls"] = state_update.get("llm_calls", collected["llm_calls"])
+        st.session_state.collected = collected
+        st.session_state.last_query = user_query
         # Metrics
         st.markdown(f"""
         <div class="metric-row">
@@ -489,36 +489,55 @@ if generate:
         </div>
         """, unsafe_allow_html=True)
 
-                # Final plan card
-        if st.session_state.final_response:
-            st.markdown(
-                "<div class='sec-head'><span>🧠 Final Travel Plan</span></div>",
-                unsafe_allow_html=True
-            )
 
-            with st.container(border=True):
-                st.markdown(st.session_state.final_response)
 
                 # Save
-            timestamp = datetime.now().strftime("%d_%b_%Y_%H-%M")
-            filename = f"travel_plan_{timestamp}.pdf"
-            save_dir = os.path.join(os.path.dirname(__file__), "travel_plans")
-            os.makedirs(save_dir, exist_ok=True)
-            pdf_path = os.path.join(save_dir, filename)
-            generate_travel_pdf(pdf_path,user_query,thread_id,collected)
+        timestamp = datetime.now().strftime("%d_%b_%Y_%H-%M")
+        filename = f"travel_plan_{timestamp}.pdf"
+        save_dir = os.path.join(os.path.dirname(__file__), "travel_plans")
+        os.makedirs(save_dir, exist_ok=True)
+        pdf_path = os.path.join(save_dir, filename)
+        generate_travel_pdf(pdf_path,user_query,thread_id,collected)
 
-            with open(pdf_path, "rb") as pdf_file:
-                pdf_bytes = pdf_file.read()
-                st.session_state.pdf_bytes = pdf_bytes
-                st.session_state.filename = filename
+        with open(pdf_path, "rb") as pdf_file:
+            pdf_bytes = pdf_file.read()
+            st.session_state.pdf_bytes = pdf_bytes
+            st.session_state.filename = filename
 
-    if st.session_state.pdf_bytes:
-        st.download_button(
+        
+                # Final plan card
+if st.session_state.final_response:
+    st.markdown(
+        "<div class='sec-head'><span>🧠 Final Travel Plan</span></div>",unsafe_allow_html=True)
+
+    with st.container(border=True):
+        st.markdown(st.session_state.final_response)
+
+# ==================================
+# Persistent Memory Display
+# ==================================
+
+if st.session_state.last_query:
+
+    st.markdown("## 📝 User Query")
+    st.info(st.session_state.last_query)
+
+if st.session_state.final_response:
+
+    st.markdown(
+        "<div class='sec-head'><span>🧠 Final Travel Plan</span></div>",
+        unsafe_allow_html=True
+    )
+
+    with st.container(border=True):
+        st.markdown(st.session_state.final_response)
+
+if st.session_state.pdf_bytes:
+
+    st.download_button(
         label="💾 Download Travel Plan PDF",
         data=st.session_state.pdf_bytes,
         file_name=st.session_state.filename,
-            mime="application/pdf",
-            use_container_width=True
-        )
-
-        
+        mime="application/pdf",
+        use_container_width=True
+    )
