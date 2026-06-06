@@ -3,7 +3,11 @@ import streamlit as st
 from datetime import datetime
 from langchain_core.messages import HumanMessage
 from main import app
+from database import save_conversation,create_conversation_table
 from tools.pdf_generator_tool import generate_travel_pdf
+create_conversation_table()
+
+# Filter warnings
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -437,6 +441,13 @@ if generate:
                         text = msgs[-1].content if msgs else ""
                         collected["final_response"] = text
                         st.markdown(text or "_No final response._")
+                        
+                        # Saving Conversations to the Database
+                        save_conversation(
+                            thread_id=thread_id,
+                            user_query=user_query,
+                            final_response=text
+                            )
 
                     collected["llm_calls"] = state_update.get("llm_calls", collected["llm_calls"])
 
@@ -467,7 +478,7 @@ if generate:
         os.makedirs(save_dir, exist_ok=True)
         pdf_path = os.path.join(save_dir, filename)
         generate_travel_pdf(pdf_path,user_query,thread_id,collected)
-       
+        
         with open(pdf_path, "rb") as pdf_file:
             downloaded =  st.download_button(
                 label="💾 Download Travel Plan PDF",
