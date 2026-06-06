@@ -489,36 +489,36 @@ if generate:
         </div>
         """, unsafe_allow_html=True)
 
-        # Final plan card
-if st.session_state.final_response:
-    st.markdown(
-        "<div class='sec-head'><span>🧠 Final Travel Plan</span></div>",
-        unsafe_allow_html=True
-    )
+                # Final plan card
+        if st.session_state.final_response:
+            st.markdown(
+                "<div class='sec-head'><span>🧠 Final Travel Plan</span></div>",
+                unsafe_allow_html=True
+            )
 
-    with st.container(border=True):
-        st.markdown(st.session_state.final_response)
+            with st.container(border=True):
+                st.markdown(st.session_state.final_response)
 
-        # Save
-    timestamp = datetime.now().strftime("%d_%b_%Y_%H-%M")
-    filename = f"travel_plan_{timestamp}.pdf"
-    save_dir = os.path.join(os.path.dirname(__file__), "travel_plans")
-    os.makedirs(save_dir, exist_ok=True)
-    pdf_path = os.path.join(save_dir, filename)
-    generate_travel_pdf(pdf_path,user_query,thread_id,collected)
+                # Save
+            timestamp = datetime.now().strftime("%d_%b_%Y_%H-%M")
+            filename = f"travel_plan_{timestamp}.pdf"
+            save_dir = os.path.join(os.path.dirname(__file__), "travel_plans")
+            os.makedirs(save_dir, exist_ok=True)
+            pdf_path = os.path.join(save_dir, filename)
+            generate_travel_pdf(pdf_path,user_query,thread_id,collected)
 
-    with open(pdf_path, "rb") as pdf_file:
-       pdf_bytes = pdf_file.read()
-       st.session_state.pdf_bytes = pdf_bytes
-       st.session_state.filename = filename
+            with open(pdf_path, "rb") as pdf_file:
+                pdf_bytes = pdf_file.read()
+                st.session_state.pdf_bytes = pdf_bytes
+                st.session_state.filename = filename
 
-if st.session_state.pdf_bytes:
-    st.download_button(
-        label="💾 Download Travel Plan PDF",
-        data=st.session_state.pdf_bytes,
-        file_name=st.session_state.filename,
-        mime="application/pdf",
-        use_container_width=True
-    )
+        if st.session_state.pdf_bytes:
+            st.download_button(
+                label="💾 Download Travel Plan PDF",
+                data=st.session_state.pdf_bytes,
+                file_name=st.session_state.filename,
+                mime="application/pdf",
+                use_container_width=True
+            )
 
         
