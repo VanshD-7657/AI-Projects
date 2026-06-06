@@ -513,24 +513,6 @@ if st.session_state.final_response:
     with st.container(border=True):
         st.markdown(st.session_state.final_response)
 
-# ==================================
-# Persistent Memory Display
-# ==================================
-
-if st.session_state.last_query:
-
-    st.markdown("## 📝 User Query")
-    st.info(st.session_state.last_query)
-
-if st.session_state.final_response:
-
-    st.markdown(
-        "<div class='sec-head'><span>🧠 Final Travel Plan</span></div>",
-        unsafe_allow_html=True
-    )
-
-    with st.container(border=True):
-        st.markdown(st.session_state.final_response)
 
 if st.session_state.pdf_bytes:
 

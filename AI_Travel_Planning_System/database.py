@@ -20,7 +20,7 @@ def create_conversation_table():
                 thread_id TEXT NOT NULL,
                 user_query TEXT NOT NULL,
                 final_response TEXT NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                created_at TIMESTAMPTZ DEFAULT NOW()
             );
             """)
 

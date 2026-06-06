@@ -7,7 +7,7 @@ from reportlab.platypus import (
 from reportlab.lib.styles import getSampleStyleSheet
 
 from datetime import datetime
-
+from zoneinfo import ZoneInfo
 
 def generate_travel_pdf(
     pdf_path,
@@ -47,7 +47,7 @@ def generate_travel_pdf(
 
     story.append(
         Paragraph(
-            f"<b>Generated:</b> {datetime.now()}",
+            f"<b>Generated:</b> {datetime.now(ZoneInfo('Asia/Kolkata'))}",
             styles["BodyText"]
         )
     )
