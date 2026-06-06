@@ -1,5 +1,6 @@
 import os
 import streamlit as st
+import uuid
 from datetime import datetime
 from langchain_core.messages import HumanMessage
 from main import app
@@ -14,8 +15,29 @@ warnings.filterwarnings("ignore")
 st.set_page_config(
     page_title="AI Travel Planning System",
     page_icon="✈️",
-    layout="wide"
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
+
+# Implementing Session State for Memory
+if "user_id" not in st.session_state:
+    st.session_state.user_id = f"user_{uuid.uuid4().hex[:6]}"
+
+if "final_response" not in st.session_state:
+    st.session_state.final_response = ""
+
+if "collected" not in st.session_state:
+    st.session_state.collected = None
+
+if "last_query" not in st.session_state:
+    st.session_state.last_query = ""
+
+if "pdf_bytes" not in st.session_state:
+    st.session_state.pdf_bytes = None
+
+if "filename" not in st.session_state:
+    st.session_state.filename = ""
+
 
 st.markdown("""
 <style>
@@ -312,9 +334,14 @@ with st.sidebar:
     st.markdown("<div class='sidebar-title'>🌍 AI Travel Planner</div>", unsafe_allow_html=True)
     st.markdown("---")
 
-    thread_id = st.text_input("👤 User ID", value="Vansh_user",
-                              help="Your session ID — keeps travel history across queries")
+    st.session_state.user_id = st.text_input(
+        "👤 User ID",
+        value=st.session_state.user_id,
+        help="Leave default or enter your own custom User ID"
+    )
 
+    thread_id = st.session_state.user_id
+    
     st.markdown("<div class='sidebar-title'>Powered by</div>", unsafe_allow_html=True)
     for tech in ["🔗 LangGraph", "🧠 Groq · LLaMA 3.3 70B", "🐘 PostgreSQL", "🔍 Tavily Search", "✈️ AviationStack"]:
         st.markdown(f"<div class='sidebar-chip'>{tech}</div>", unsafe_allow_html=True)
@@ -440,6 +467,7 @@ if generate:
                         msgs = state_update.get("messages", [])
                         text = msgs[-1].content if msgs else ""
                         collected["final_response"] = text
+                        st.session_state.final_response = text
                         st.markdown(text or "_No final response._")
                         
                         # Saving Conversations to the Database
@@ -450,7 +478,8 @@ if generate:
                             )
 
                     collected["llm_calls"] = state_update.get("llm_calls", collected["llm_calls"])
-
+                    st.session_state.collected = collected
+                    st.session_state.last_query = user_query
         # Metrics
         st.markdown(f"""
         <div class="metric-row">
@@ -478,17 +507,21 @@ if generate:
         os.makedirs(save_dir, exist_ok=True)
         pdf_path = os.path.join(save_dir, filename)
         generate_travel_pdf(pdf_path,user_query,thread_id,collected)
-        
+
         with open(pdf_path, "rb") as pdf_file:
-            downloaded =  st.download_button(
+           pdf_bytes = pdf_file.read()
+
+        st.session_state.pdf_bytes = pdf_bytes
+        st.session_state.filename = filename
+
+        if st.session_state.pdf_bytes:
+            st.download_button(
                 label="💾 Download Travel Plan PDF",
-                data=pdf_file,
-                file_name=filename,
+                data=st.session_state.pdf_bytes,
+                file_name=st.session_state.filename,
                 mime="application/pdf",
                 use_container_width=True
             )
-        if downloaded:
-            st.success(f"PDF saved successfully: {filename}")
-            st.markdown(f"""📁 Saved to: `travel_plans/{filename}` """)
+
 
         
