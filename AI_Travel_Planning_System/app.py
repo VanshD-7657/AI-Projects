@@ -250,7 +250,7 @@ section[data-testid="stSidebar"] {
 .sidebar-title { color: #e0edf8; font-size: 1rem; font-weight: 600; margin: 1rem 0 0.5rem; }
 
 /* Hide branding */
-#MainMenu, footer, header { visibility: hidden; }
+#MainMenu, footer { visibility: hidden; }
 
 /* Textarea */
 .stTextArea textarea {
@@ -490,15 +490,14 @@ if generate:
         """, unsafe_allow_html=True)
 
         # Final plan card
-        if collected["final_response"]:
-            if collected["final_response"]:
-                st.markdown(
-                    "<div class='sec-head'><span>🧠 Final Travel Plan</span></div>",
-                    unsafe_allow_html=True
-                )
+        if st.session_state.final_response:
+            st.markdown(
+                "<div class='sec-head'><span>🧠 Final Travel Plan</span></div>",
+                unsafe_allow_html=True
+            )
 
-                with st.container(border=True):
-                    st.markdown(collected["final_response"])
+            with st.container(border=True):
+                st.markdown(st.session_state.final_response)
 
         # Save
         timestamp = datetime.now().strftime("%d_%b_%Y_%H-%M")
