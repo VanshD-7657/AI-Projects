@@ -512,13 +512,13 @@ if generate:
                 st.session_state.pdf_bytes = pdf_bytes
                 st.session_state.filename = filename
 
-        if st.session_state.pdf_bytes:
-            st.download_button(
-                label="💾 Download Travel Plan PDF",
-                data=st.session_state.pdf_bytes,
-                file_name=st.session_state.filename,
-                mime="application/pdf",
-                use_container_width=True
-            )
+    if st.session_state.pdf_bytes:
+        st.download_button(
+        label="💾 Download Travel Plan PDF",
+        data=st.session_state.pdf_bytes,
+        file_name=st.session_state.filename,
+            mime="application/pdf",
+            use_container_width=True
+        )
 
         
