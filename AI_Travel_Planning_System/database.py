@@ -5,10 +5,13 @@ import streamlit as st
 DATABASE_URL = st.secrets["DATABASE_URL"]
 
 def get_connection():
-    return psycopg.connect(
+    conn = psycopg.connect(
         DATABASE_URL,
         autocommit=True
     )
+    with conn.cursor() as cur:
+        cur.execute("SET TIME ZONE 'Asia/Kolkata';")
+    return conn
 
 # Create Table
 def create_conversation_table():
