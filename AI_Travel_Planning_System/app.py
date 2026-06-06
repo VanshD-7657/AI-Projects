@@ -509,9 +509,8 @@ if st.session_state.final_response:
 
     with open(pdf_path, "rb") as pdf_file:
        pdf_bytes = pdf_file.read()
-
-st.session_state.pdf_bytes = pdf_bytes
-st.session_state.filename = filename
+       st.session_state.pdf_bytes = pdf_bytes
+       st.session_state.filename = filename
 
 if st.session_state.pdf_bytes:
     st.download_button(
