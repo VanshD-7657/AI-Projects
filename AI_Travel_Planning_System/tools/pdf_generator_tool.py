@@ -44,7 +44,7 @@ def generate_travel_pdf(
     )
 
     kolkata_time = datetime.now(ZoneInfo('Asia/Kolkata'))
-    formatted_time = kolkata_time.strftime("%Y-%m-%d %H:%M") # e.g., 2026-06-06 16:16:06
+    formatted_time = kolkata_time.strftime("%d_%b_%Y_%H-%M") 
     
     story.append(
         Paragraph(

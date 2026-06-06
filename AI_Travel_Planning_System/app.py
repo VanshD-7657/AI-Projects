@@ -2,6 +2,7 @@ import os
 import streamlit as st
 import uuid
 from datetime import datetime
+from zoneinfo import ZoneInfo
 from langchain_core.messages import HumanMessage
 from main import app
 from database import save_conversation,create_conversation_table
@@ -492,7 +493,8 @@ if generate:
 
 
                 # Save
-        timestamp = datetime.now().strftime("%d_%b_%Y_%H-%M")
+        kolkata_now = datetime.now(ZoneInfo('Asia/Kolkata'))
+        timestamp = kolkata_now.strftime("%d_%b_%Y_%H-%M")
         filename = f"travel_plan_{timestamp}.pdf"
         save_dir = os.path.join(os.path.dirname(__file__), "travel_plans")
         os.makedirs(save_dir, exist_ok=True)
