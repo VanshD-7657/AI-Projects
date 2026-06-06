@@ -17,9 +17,7 @@ def generate_travel_pdf(
 ):
 
     doc = SimpleDocTemplate(pdf_path)
-
     styles = getSampleStyleSheet()
-
     story = []
 
     story.append(
@@ -45,9 +43,12 @@ def generate_travel_pdf(
         )
     )
 
+    kolkata_time = datetime.now(ZoneInfo('Asia/Kolkata'))
+    formatted_time = kolkata_time.strftime("%Y-%m-%d %H:%M") # e.g., 2026-06-06 16:16:06
+    
     story.append(
         Paragraph(
-            f"<b>Generated:</b> {datetime.now(ZoneInfo('Asia/Kolkata'))}",
+            f"<b>Generated:</b> {formatted_time} (IST)",
             styles["BodyText"]
         )
     )
