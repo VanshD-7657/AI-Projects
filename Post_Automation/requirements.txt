@@ -1,0 +1,7 @@
+google-antigravity
+google-genai
+requests
+python-dotenv
+Pillow
+dotenv
+huggingface_hub
