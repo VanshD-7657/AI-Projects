@@ -60,19 +60,31 @@ class ContentEngine:
             f"Keywords to include: {kw_str}\n\n"
             f"Requirements:\n"
             f"1. Start the post with a highly relevant emoji or icon that matches the topic and emotional tone. Choose naturally from emojis such as: 🤖 (AI), 📊 (Data Science), 🚀 (Innovation), 💡 (Ideas & Learning), 🔥 (Trending Topics), 🎯 (Career Growth), ⚙️ (Automation), 💻 (Software Development), 🧠 (Machine Learning), 📈 (Business Growth), 🌐 (Technology), 🔍 (Insights), 🏆 (Success), 🎓 (Education), 🛠️ (Engineering), ☁️ (Cloud Computing), 🤝 (Collaboration), 📱 (Digital Transformation), 🔮 (Future Trends), 🌟 (Achievements), 🚦 (Decision Making), 🗺️ (Strategy), 🏗️ (Building Products), 🧪 (Experimentation), ⚡ (Productivity), 🌍 (Global Impact), 🛡️ (Cybersecurity), 💼 (Professional Development), 📚 (Knowledge Sharing), or other contextually appropriate symbols.\n"
-            f"2 Follow the emoji with a powerful, curiosity-driven hook in the first 1-2 lines that immediately captures attention and encourages users to click 'see more'. The opening should feel professional, insightful, and engaging. Use one of these hook styles:\n"
+            f"2. Follow the emoji with a powerful, curiosity-driven hook in the first 1-2 lines that immediately captures attention and encourages users to click 'see more'. The opening should feel professional, insightful, and engaging. Use one of these hook styles:\n"
+            f"   - The Contrarian View: Share an opinion that goes against the status quo.\n"
+            f"   - The Bold Question: Pose an unexpected, thought-provoking question.\n"
+            f"   - The Relatable Problem: Start with a common frustration or challenge that the reader faces.\n"
+            f"   - The Direct Value: Get straight to a key statistic, lesson, or insight.\n"
             f"3. Use short, readable paragraphs (1-3 sentences each) with bullet points where appropriate.\n"
             f"4. Include a clear call-to-action (CTA) at the end encouraging comments/discussion.\n"
             f"5. Add 3-5 highly relevant hashtags at the very bottom.\n"
             f"6. Do NOT use emojis excessively, but keep it visually spaced and inviting.\n"
-            f"7. Avoid generic openings such as 'The future is here' or 'In today's world'. Make every opening unique, scroll-stopping, and LinkedIn-worthy.\n"
+            f"7. STRICTLY AVOID boilerplate/generic openings like 'As we stand...', 'As we continue...', 'In this era...', 'With the rise of...', 'In today's world...', 'The future is...', 'What if...', 'It is no secret that...'. Start immediately with the core hook without build-up words.\n"
         )
+
+        config = {}
+        try:
+            from google.genai import types
+            config = types.GenerateContentConfig(temperature=0.8)
+        except Exception:
+            config = {"temperature": 0.8}
 
         if self.use_gemini and self.client:
             try:
                 response = self.client.models.generate_content(
                     model="gemini-3.5-flash",
-                    contents=prompt
+                    contents=prompt,
+                    config=config
                 )
                 return response.text.strip()
             except Exception as e:
@@ -86,7 +98,8 @@ class ContentEngine:
                 response = self.hf_client.chat_completion(
                     model="meta-llama/Llama-3.3-70B-Instruct",
                     messages=messages,
-                    max_tokens=600
+                    max_tokens=600,
+                    temperature=0.8
                 )
                 content = response.choices[0].message.content.strip()
                 if content:
@@ -319,12 +332,23 @@ class ContentEngine:
         Startups, Productivity, Technology Trends, LLMs, Agents, or Emerging Technologies.
         Uses Gemini first, falling back to Hugging Face Llama.
         """
+        import random
+        themes = [
+            "DevOps, CI/CD, and Infrastructure Automation",
+            "Software Engineering Best Practices and Architecture",
+            "Practical LLMs, Vector Databases, and AI Agent Orchestration",
+            "Product Management and Building Modern Tech Products",
+            "Tech Career Growth, Productivity hacks, and Personal Branding",
+            "Data Science, Data Engineering, and Analytics Insights",
+            "Startups, Technical Leadership, and Scaling Tech Teams"
+        ]
+        chosen_theme = random.choice(themes)
+        logger.info(f"Chosen topic generation theme: {chosen_theme}")
+
         prompt = (
             "You are a thought leader, social media strategist, and creative content director.\n"
             "Generate a single highly engaging, professional, and trending LinkedIn post topic.\n"
-            "The topic must be relevant to one of these fields: AI, Machine Learning, Data Science, "
-            "Software Engineering, Automation, Career Growth, Startups, Productivity, Technology Trends, "
-            "LLMs, Agents, or Emerging Technologies.\n\n"
+            f"The topic must be relevant to the theme: '{chosen_theme}'.\n\n"
             "Requirements:\n"
             "1. Output ONLY the topic title. Do not add quotes, intro text, metadata, or extra explanation.\n"
             "2. Make it punchy, thought-provoking, and tailored to business/tech professionals on LinkedIn.\n"
@@ -333,11 +357,19 @@ class ContentEngine:
             "4. Do NOT output markdown formatting."
         )
 
+        config = {}
+        try:
+            from google.genai import types
+            config = types.GenerateContentConfig(temperature=0.95)
+        except Exception:
+            config = {"temperature": 0.95}
+
         if self.use_gemini and self.client:
             try:
                 response = self.client.models.generate_content(
                     model="gemini-3.5-flash",
-                    contents=prompt
+                    contents=prompt,
+                    config=config
                 )
                 topic = response.text.strip()
                 if topic:
@@ -353,7 +385,8 @@ class ContentEngine:
                 response = self.hf_client.chat_completion(
                     model="meta-llama/Llama-3.3-70B-Instruct",
                     messages=messages,
-                    max_tokens=60
+                    max_tokens=60,
+                    temperature=0.95
                 )
                 topic = response.choices[0].message.content.strip()
                 # Clean up quotes if returned by the LLM
