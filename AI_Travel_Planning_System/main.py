@@ -14,7 +14,7 @@ load_dotenv()
 from tools.tavily_tool import search_hotels
 from tools.flight_tool import search_flights
 
-llm = ChatGroq(model="llama-3.3-70b-versatile")
+llm = ChatGroq(model="openai/gpt-oss-120b")
 
 DATABASE_URL = os.getenv('DATABASE_URL')
 
