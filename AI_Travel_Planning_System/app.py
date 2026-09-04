@@ -451,22 +451,29 @@ if generate:
 
                     elif node_name == "flight_agent":
                         text = state_update.get("flight_results", "")
+                        text = text.replace("<br>", "\n").replace("<br/>", "\n").replace("<br />", "\n")
                         collected["flight_results"] = text
                         st.markdown(text or "_No flight data returned._")
 
                     elif node_name == "hotel_agent":
                         text = state_update.get("hotel_results", "")
+                        text = text.replace("<br>", "\n").replace("<br/>", "\n").replace("<br />", "\n")
                         collected["hotel_results"] = text
                         st.markdown(text or "_No hotel data returned._")
 
                     elif node_name == "research_agent":
                         text = state_update.get("research_results", "")
+                        text = text.replace("<br>", "\n").replace("<br/>", "\n").replace("<br />", "\n")
                         collected["research_results"] = text
                         st.markdown(text or "_No research results generated._")
 
                     elif node_name == "final_agent":
                         msgs = state_update.get("messages", [])
                         text = msgs[-1].content if msgs else ""
+                        
+                        # Clean up any LLM-generated HTML line breaks for Streamlit markdown
+                        text = text.replace("<br>", "\n").replace("<br/>", "\n").replace("<br />", "\n")
+                        
                         collected["final_response"] = text
                         st.session_state.final_response = text
                         st.markdown(text or "_No final response._")
