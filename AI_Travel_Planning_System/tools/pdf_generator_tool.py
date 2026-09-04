@@ -20,6 +20,14 @@ def clean_llm_text(text):
         return ""
     
     text = str(text)
+    text = text.replace("₹", "Rs. ")
+    
+    # 2. Replace special hyphens, en-dashes, and em-dashes with standard ASCII hyphens
+    text = text.replace("–", "-").replace("—", "-").replace("‐", "-").replace("‑", "-")
+    
+    # 3. Clean up non-breaking spaces and smart quotes
+    text = text.replace("\xa0", " ").replace("\u200b", "")
+    text = text.replace("“", '"').replace("”", '"').replace("’", "'").replace("‘", "'")
     
     # 1. Convert LaTeX arrows & math symbols into clean plain text
     text = re.sub(r'\\rightarrow', ' → ', text)
