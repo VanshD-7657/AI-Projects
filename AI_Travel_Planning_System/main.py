@@ -163,8 +163,9 @@ graph.add_edge('research_agent', 'final_agent')
 graph.add_edge('final_agent', END)
 
 # Initialize Postgres checkpoint server
-_connection = psycopg.connect(DATABASE_URL,autocommit=True)
-checkpointer = PostgresSaver(_connection)
+from psycopg_pool import ConnectionPool
+_pool = ConnectionPool(conninfo=DATABASE_URL, max_size=20, kwargs={"autocommit": True, "prepare_threshold": 0})
+checkpointer = PostgresSaver(_pool)
 checkpointer.setup()
 
 app = graph.compile(checkpointer=checkpointer)
