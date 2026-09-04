@@ -1,3 +1,5 @@
+import html
+
 from reportlab.platypus import (
     SimpleDocTemplate,
     Paragraph,
@@ -31,14 +33,14 @@ def generate_travel_pdf(
 
     story.append(
         Paragraph(
-            f"<b>User Query:</b> {user_query}",
+            f"<b>User Query:</b> {html.escape(str(user_query))}",
             styles["BodyText"]
         )
     )
 
     story.append(
         Paragraph(
-            f"<b>User ID:</b> {thread_id}",
+            f"<b>User ID:</b> {html.escape(str(thread_id))}",
             styles["BodyText"]
         )
     )
@@ -70,10 +72,12 @@ def generate_travel_pdf(
                 styles["Heading2"]
             )
         )
+        
+        escaped_text = html.escape(str(text)).replace("\n", "<br/>")
 
         story.append(
             Paragraph(
-                str(text).replace("\n", "<br/>"),
+                escaped_text,
                 styles["BodyText"]
             )
         )
